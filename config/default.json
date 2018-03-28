@@ -1,0 +1,17 @@
+{
+  "http" : {
+    "port" : 80
+  },
+  "routers" : [
+      ["/","./pages/user.js"]
+  ],
+  "redis" : {
+    "ip" : "www.jay123.club",
+    "port" : 30003,
+    "db" : 0,
+    "auth" : "hujiangyi"
+  },
+  "logger" : {
+    "logDir" : "./logs/"
+  }
+}

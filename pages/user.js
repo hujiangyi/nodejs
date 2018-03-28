@@ -1,20 +1,30 @@
 const express = require('express');
-const router = express.Router();
-var redis   = require('redis');
-var client  = redis.createClient('30003', '207.148.22.193');
-client.auth("hujiangyi");
-client.on("error", function(error) {
-    console.log(error);
-});
+var config = require('config');
+var UUID = require('uuid');
+var cache   = require('../common/cache.js');
+const log4js = require('../common/logger.js');
+const logger = log4js.getLogger();
 
+const router = express.Router();
+
+router.get('/getuuid', function (req, res) {
+    var userName = req.query.u;
+    if (!userName) {
+        userName = 'undefined'
+    }
+    var uuid = UUID.v1();
+    logger.info('make ' + userName + '`s uuid is ' + uuid);
+    res.json({uuid:uuid})
+});
 
 router.get('/set', function (req, res) {
-    client.set('abc','123');
+    cache.set('abc','234');
     res.send('hello, express')
 });
-router.get('/sv', function (req, res) {
-    client.get('abc', function(error,re) {
-        console.dir(re);
+
+router.get('/get', function (req, res) {
+    cache.get('abc', function(error,re) {
+        logger.info(re);
         res.send('hello, express,' + re);
     });
 });

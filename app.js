@@ -1,13 +1,25 @@
 var express    = require('express');
+var fs = require('fs');
+var https = require('https');
+var config = require('config');
+
 var app        = express();
-var router        = require('./pages/user.js');
+const log4js = require('./common/logger.js');
+const logger = log4js.getLogger();
+log4js.useLogger(app,logger);
 
-app.use('/home', router);
-
-app.get('/', function(req, res) {
-    console.log('get /');
-    res.send('<h1>Hello World</h1>');
+var routers = config.get('routers');
+routers.forEach(function (item) {
+    var r = require(item[1]);
+    app.use(item[0], r);
 });
-var port = process.env.PORT || 8080;
-app.listen(port);
+
+var port = process.env.PORT || 443;
+httpsServer = https.createServer({
+    key:fs.readFileSync('/etc/www.jay123.club/2_www.j' +
+        'ay123.club.key'),
+    cert:fs.readFileSync('/etc/www.jay123.club/1_www.jay123.club_bundle.crt')
+},app);
+
+httpsServer.listen(port);
 console.log('Magic happens on port ' + port);
